@@ -1,6 +1,6 @@
 # SimpleOpeningHours()
 
-SimpleOpeningHours is a small JavaScript class to parse OpenStreetMap `opening_hours`
+SimpleOpeningHours is a small JavaScript class to parse OpenStreetMap `opening_hours`.
 It only supports the human readable parts and not [this complete crazy overengineered specification](https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification).
 
 ## Supported opening_hours examples

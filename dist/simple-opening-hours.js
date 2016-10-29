@@ -56,6 +56,9 @@ var SimpleOpeningHours = (function () {
         });
     };
     SimpleOpeningHours.prototype.simplify = function (input) {
+        if (input == "24/7") {
+            input = "mo-su 00:00-24:00; ph 00:00-24:00";
+        }
         input = input.toLocaleLowerCase();
         input = input.trim();
         input = input.replace(/ +(?= )/g, ''); //replace double spaces
