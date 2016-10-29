@@ -21,7 +21,6 @@ class SimpleOpeningHours {
 	public isOpenOn(date: Date): boolean {
 		let testday = date.getDay();
 		let testtime = date.getHours() + ":" + date.getMinutes()
-		console.log('Day: ', testday, ', Time: ' + testtime)
 		let i = 0;
 		let times: string[];
 		for (let key in this.openingHours)
@@ -63,7 +62,6 @@ class SimpleOpeningHours {
 		parts.forEach((part) => {
 			this.parseHardPart(part)
 		});
-		console.log(this.openingHours)
 	}
 
 	private simplify(input: string): string {

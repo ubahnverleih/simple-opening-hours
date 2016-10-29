@@ -18,7 +18,6 @@ var SimpleOpeningHours = (function () {
         var _this = this;
         var testday = date.getDay();
         var testtime = date.getHours() + ":" + date.getMinutes();
-        console.log('Day: ', testday, ', Time: ' + testtime);
         var i = 0;
         var times;
         for (var key in this.openingHours) {
@@ -55,7 +54,6 @@ var SimpleOpeningHours = (function () {
         parts.forEach(function (part) {
             _this.parseHardPart(part);
         });
-        console.log(this.openingHours);
     };
     SimpleOpeningHours.prototype.simplify = function (input) {
         input = input.toLocaleLowerCase();

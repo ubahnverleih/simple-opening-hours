@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<script src="../dist/simple-opening-hours.js"></script>
+		<script>
+			var hours = new SimpleOpeningHours('Mo-Sa 06:00-22:00');
+			console.log('Open?', hours.isOpenNow());
+			console.table(hours.getTable());
+		</script>
+	</head>
+	<body>
+		Please open console
+	</body>
+</html>
