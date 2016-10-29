@@ -1,25 +1,34 @@
 class SimpleOpeningHours {
+	/**
+	 * Creates the OpeningHours Object with OSM opening_hours string
+	 */
 	constructor(inp:string)
 	{
 		this.parse(inp);
 	}
 
+	/**
+	 * returns the OpeningHours Object
+	 */
 	public getTable()
 	{
-		return this.mainObj;
+		return this.openingHours;
 	}
 
+	/**
+	 * Returns if the OpeningHours match on given Date
+	 */
 	public isOpenOn(date: Date): boolean {
 		let testday = date.getDay();
 		let testtime = date.getHours() + ":" + date.getMinutes()
 		console.log('Day: ', testday, ', Time: ' + testtime)
 		let i = 0;
 		let times: string[];
-		for (let key in this.mainObj)
+		for (let key in this.openingHours)
 		{
 			if (i == testday)
 			{
-				times = this.mainObj[key];
+				times = this.openingHours[key];
 			}
 			i++;
 		}
@@ -36,22 +45,28 @@ class SimpleOpeningHours {
 		return isOpen;
 	}
 
+	/**
+	 * returns if the OpeningHours match now
+	 */
 	public isOpenNow(): boolean
 	{
 		return this.isOpenOn(new Date());
 	}
 
-	public parse(inp) {
-		this.initMainObj();
+	/**
+	 * Parses the input and creates openingHours Object
+	 */
+	private parse(inp) {
+		this.initOpeningHoursObj();
 		inp = this.simplify(inp);
 		let parts = this.splitHard(inp);
 		parts.forEach((part) => {
 			this.parseHardPart(part)
 		});
-		console.log(this.mainObj)
+		console.log(this.openingHours)
 	}
 
-	public simplify(input: string): string {
+	private simplify(input: string): string {
 		input = input.toLocaleLowerCase();
 		input = input.trim();
 		input = input.replace(/ +(?= )/g, ''); //replace double spaces
@@ -73,11 +88,11 @@ class SimpleOpeningHours {
 	/**
 	 * Split on ;
 	 */
-	public splitHard(inp: string): string[] {
+	private splitHard(inp: string): string[] {
 		return inp.split(';');
 	}
 
-	public parseHardPart(part: string) {
+	private parseHardPart(part: string) {
 		if (part == "24/7")
 		{
 			part = "Mo-Su 00:00-24:00; Ph 00:00-24:00";
@@ -130,11 +145,11 @@ class SimpleOpeningHours {
 		//apply data to main obj
 		for (let key in tempData)
 		{
-			this.mainObj[key] = tempData[key];
+			this.openingHours[key] = tempData[key];
 		}
 	}
 
-	public parseDays(part: string): string[] {
+	private parseDays(part: string): string[] {
 		part = part.toLowerCase();
 		let days = []
 		let softparts = part.split(',');
@@ -151,8 +166,8 @@ class SimpleOpeningHours {
 		return days
 	}
 
-	public initMainObj() {
-		this.mainObj = {
+	private initOpeningHoursObj() {
+		this.openingHours = {
 			su: [],
 			mo: [],
 			tu: [],
@@ -167,7 +182,7 @@ class SimpleOpeningHours {
 	/**
 	 * Calculates the days in range "mo-we" -> ["mo", "tu", "we"]
 	 */
-	public calcDayRange(range: string): string[] {
+	private calcDayRange(range: string): string[] {
 		let def = {
 			su: 0,
 			mo: 1,
@@ -199,7 +214,7 @@ class SimpleOpeningHours {
 	 * Creates a range between two number.
 	 * if the max value is 6 a range bewteen 6 and 2 is 6, 0, 1, 2
 	 */
-	public calcRange(min: number, max: number, maxval): number[] {
+	private calcRange(min: number, max: number, maxval): number[] {
 		if (min == max) {
 			return [min]
 		}
@@ -220,7 +235,7 @@ class SimpleOpeningHours {
 	/**
 	 * Check if string is time range
 	 */
-	public checkTime(inp: string): boolean {
+	private checkTime(inp: string): boolean {
 		//e.g. 09:00+
 		if (inp.match(/[0-9]{1,2}:[0-9]{2}\+/)) {
 			return true
@@ -239,7 +254,7 @@ class SimpleOpeningHours {
 	/**
 	 * check if string is day or dayrange
 	 */
-	public checkDay(inp: string): boolean {
+	private checkDay(inp: string): boolean {
 		let days = ["mo", "tu", "we", "th", "fr", "sa", "su", "ph"]
 		if (inp.match(/\-/g)) {
 			let rangelements = inp.split('-');
@@ -262,7 +277,7 @@ class SimpleOpeningHours {
 	 * if time1 < time2 -> -1
 	 * if time1 == time2 -> 0
 	 */
-	public compareTime(time1: string, time2: string)
+	private compareTime(time1: string, time2: string)
 	{
 		let date1 = new Date('2016-01-01 '+ time1);
 		let date2 = new Date('2016-01-01 '+ time2);
@@ -277,5 +292,5 @@ class SimpleOpeningHours {
 		return 0
 	}
 
-	private mainObj: Object;
+	private openingHours: Object;
 }

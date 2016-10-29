@@ -1,10 +1,19 @@
 var SimpleOpeningHours = (function () {
+    /**
+     * Creates the OpeningHours Object with OSM opening_hours string
+     */
     function SimpleOpeningHours(inp) {
         this.parse(inp);
     }
+    /**
+     * returns the OpeningHours Object
+     */
     SimpleOpeningHours.prototype.getTable = function () {
-        return this.mainObj;
+        return this.openingHours;
     };
+    /**
+     * Returns if the OpeningHours match on given Date
+     */
     SimpleOpeningHours.prototype.isOpenOn = function (date) {
         var _this = this;
         var testday = date.getDay();
@@ -12,9 +21,9 @@ var SimpleOpeningHours = (function () {
         console.log('Day: ', testday, ', Time: ' + testtime);
         var i = 0;
         var times;
-        for (var key in this.mainObj) {
+        for (var key in this.openingHours) {
             if (i == testday) {
-                times = this.mainObj[key];
+                times = this.openingHours[key];
             }
             i++;
         }
@@ -29,18 +38,24 @@ var SimpleOpeningHours = (function () {
         });
         return isOpen;
     };
+    /**
+     * returns if the OpeningHours match now
+     */
     SimpleOpeningHours.prototype.isOpenNow = function () {
         return this.isOpenOn(new Date());
     };
+    /**
+     * Parses the input and creates openingHours Object
+     */
     SimpleOpeningHours.prototype.parse = function (inp) {
         var _this = this;
-        this.initMainObj();
+        this.initOpeningHoursObj();
         inp = this.simplify(inp);
         var parts = this.splitHard(inp);
         parts.forEach(function (part) {
             _this.parseHardPart(part);
         });
-        console.log(this.mainObj);
+        console.log(this.openingHours);
     };
     SimpleOpeningHours.prototype.simplify = function (input) {
         input = input.toLocaleLowerCase();
@@ -110,7 +125,7 @@ var SimpleOpeningHours = (function () {
         });
         //apply data to main obj
         for (var key in tempData) {
-            this.mainObj[key] = tempData[key];
+            this.openingHours[key] = tempData[key];
         }
     };
     SimpleOpeningHours.prototype.parseDays = function (part) {
@@ -129,8 +144,8 @@ var SimpleOpeningHours = (function () {
         });
         return days;
     };
-    SimpleOpeningHours.prototype.initMainObj = function () {
-        this.mainObj = {
+    SimpleOpeningHours.prototype.initOpeningHoursObj = function () {
+        this.openingHours = {
             su: [],
             mo: [],
             tu: [],
@@ -244,97 +259,4 @@ var SimpleOpeningHours = (function () {
     };
     return SimpleOpeningHours;
 }());
-/// <reference path='openingparser.ts' />
-var OpeningParserTests = (function () {
-    function OpeningParserTests() {
-        /*let cl = new OpeningParser();
-        
-        let simplifytestcases: string[][];
-        simplifytestcases = [
-            ['Mo-Fr 8:00-12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo -Fr 8:00-12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo - Fr 8:00-12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00- 12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00 -12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00 - 12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00-12:00 ', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr  8:00-12:00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00-12 :00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00-12 : 00', 'Mo-Fr 8:00-12:00'],
-            ['Mo-Fr 8:00-12: 00', 'Mo-Fr 8:00-12:00'],
-
-            ['Mo-Fr 8:00-12:00, 14:00-18:00', 'Mo-Fr 8:00-12:00,14:00-18:00'],
-            ['Mo-Fr 8:00-12:00,14:00-18:00', 'Mo-Fr 8:00-12:00,14:00-18:00'],
-            ['Mo-Fr 8:00-12:00 , 14:00-18:00', 'Mo-Fr 8:00-12:00,14:00-18:00'],
-            ['Mo-Fr 8:00-12:00 ,14:00-18:00', 'Mo-Fr 8:00-12:00,14:00-18:00'],
-
-            ['Mo-Fr 8:00-12:00; Sa 14:00-18:00', 'Mo-Fr 8:00-12:00;Sa 14:00-18:00'],
-            ['Mo-Fr 8:00-12:00;Sa 14:00-18:00', 'Mo-Fr 8:00-12:00;Sa 14:00-18:00'],
-            ['Mo-Fr 8:00-12:00 ;Sa 14:00-18:00', 'Mo-Fr 8:00-12:00;Sa 14:00-18:00'],
-            ['Mo-Fr 8:00-12:00 ; Sa 14:00-18:00', 'Mo-Fr 8:00-12:00;Sa 14:00-18:00'],
-        ]
-        this.testList(cl.simplify, simplifytestcases);
-
-        let hardsplitList = [
-            ['Mo-Fr 8:00-12:00;Sa 14:00-18:00', ["Mo-Fr 8:00-12:00", "Sa 14:00-18:00"]]
-        ]
-        this.testList(cl.splitHard, hardsplitList)
-
-        console.log(cl.calcRange(1, 3, 6));
-        console.log(cl.calcRange(5, 1, 6));
-
-        console.log(cl.calcDayRange("mo-fr"));
-        console.log(cl.calcDayRange("fr-mo"));
-
-        //cl.parse('Mo-Fr 8:00-12:00; Sa 14:00-18:00');
-        cl.parse('Mo-Fr 8:00-12:00, 14:00-18:00, Tu 19:00-21:00; Sa 14:00-18:00; We off');
-        //cl.parse('Mo-Fr 8:00-12:00, Mi 14:00-18:00; Sa 14:00-18:00');*/
-        console.log('OPEN NOW?', new SimpleOpeningHours('Mo-Sa 06:00-22:00').isOpenNow());
-    }
-    OpeningParserTests.prototype.testVal = function (func, inp, out) {
-        var res = func(inp);
-        //string
-        if (typeof out == "string") {
-            this.testString(res, inp, out);
-        }
-        //array
-        if (!!out && Array === out.constructor) {
-            this.testArr(res, inp, out);
-        }
-    };
-    OpeningParserTests.prototype.testList = function (func, list) {
-        var _this = this;
-        list.forEach(function (testcase) {
-            _this.testVal(func, testcase[0], testcase[1]);
-        });
-    };
-    OpeningParserTests.prototype.testErr = function (inp, out) {
-        console.log('\033[31mFAILED\x1B[0m: ' + inp + " == " + out);
-    };
-    OpeningParserTests.prototype.testSucc = function (inp, out) {
-        console.log('\x1b[32m✓\x1B[0m ' + inp + ' == ' + out);
-    };
-    OpeningParserTests.prototype.testString = function (res, inp, out) {
-        if (res == out) {
-            this.testSucc(inp, out);
-        }
-        else {
-            this.testErr(inp, out);
-        }
-    };
-    OpeningParserTests.prototype.testArr = function (res, inp, out) {
-        if (res.length != out.length) {
-            this.testErr(inp, out);
-        }
-        for (var i = 0; i < res.length; i++) {
-            if (res[i] != out[i]) {
-                this.testErr(inp, out);
-                break;
-            }
-        }
-        this.testSucc(inp, out);
-    };
-    return OpeningParserTests;
-}());
-new OpeningParserTests();
 //# sourceMappingURL=simple-opening-hours.js.map
