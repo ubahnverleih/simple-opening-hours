@@ -78,7 +78,7 @@ var SimpleOpeningHours = (function () {
     SimpleOpeningHours.prototype.parseHardPart = function (part) {
         var _this = this;
         if (part == "24/7") {
-            part = "Mo-Su 00:00-24:00; Ph 00:00-24:00";
+            part = "mo-su 00:00-24:00";
         }
         var segments = part.split(/\ |\,/);
         var tempData = {};

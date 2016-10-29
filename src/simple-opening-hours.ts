@@ -93,7 +93,7 @@ class SimpleOpeningHours {
 	private parseHardPart(part: string) {
 		if (part == "24/7")
 		{
-			part = "Mo-Su 00:00-24:00; Ph 00:00-24:00";
+			part = "mo-su 00:00-24:00";
 		}
 		let segments = part.split(/\ |\,/);
 
