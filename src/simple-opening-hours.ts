@@ -2,16 +2,14 @@ class SimpleOpeningHours {
 	/**
 	 * Creates the OpeningHours Object with OSM opening_hours string
 	 */
-	constructor(inp:string)
-	{
+	constructor(inp: string) {
 		this.parse(inp);
 	}
 
 	/**
 	 * returns the OpeningHours Object
 	 */
-	public getTable()
-	{
+	public getTable() {
 		return this.openingHours;
 	}
 
@@ -23,23 +21,20 @@ class SimpleOpeningHours {
 		let testtime = date.getHours() + ":" + date.getMinutes()
 		let i = 0;
 		let times: string[];
-		for (let key in this.openingHours)
-		{
-			if (i == testday)
-			{
+		for (let key in this.openingHours) {
+			if (i == testday) {
 				times = this.openingHours[key];
 			}
 			i++;
 		}
 		let isOpen = false
-		times.forEach((time)=>{
+		times.forEach((time) => {
 			//TODO: times like 09:00+ are not supported here
 			let timedata = time.split('-');
 			if ((this.compareTime(testtime, timedata[0]) != -1)
-				&& (this.compareTime(timedata[1], testtime) != -1))
-				{
-					isOpen = true;
-				}
+				&& (this.compareTime(timedata[1], testtime) != -1)) {
+				isOpen = true;
+			}
 		});
 		return isOpen;
 	}
@@ -47,8 +42,7 @@ class SimpleOpeningHours {
 	/**
 	 * returns if the OpeningHours match now
 	 */
-	public isOpenNow(): boolean
-	{
+	public isOpenNow(): boolean {
 		return this.isOpenOn(new Date());
 	}
 
@@ -65,8 +59,7 @@ class SimpleOpeningHours {
 	}
 
 	private simplify(input: string): string {
-		if (input == "24/7")
-		{
+		if (input == "24/7") {
 			input = "mo-su 00:00-24:00; ph 00:00-24:00";
 		}
 		input = input.toLocaleLowerCase();
@@ -95,8 +88,7 @@ class SimpleOpeningHours {
 	}
 
 	private parseHardPart(part: string) {
-		if (part == "24/7")
-		{
+		if (part == "24/7") {
 			part = "mo-su 00:00-24:00";
 		}
 		let segments = part.split(/\ |\,/);
@@ -127,8 +119,7 @@ class SimpleOpeningHours {
 				if (segment == "off") {
 					times = []
 				}
-				else
-				{
+				else {
 					times.push(segment)
 				}
 			}
@@ -145,8 +136,7 @@ class SimpleOpeningHours {
 		})
 
 		//apply data to main obj
-		for (let key in tempData)
-		{
+		for (let key in tempData) {
 			this.openingHours[key] = tempData[key];
 		}
 	}
@@ -279,16 +269,13 @@ class SimpleOpeningHours {
 	 * if time1 < time2 -> -1
 	 * if time1 == time2 -> 0
 	 */
-	private compareTime(time1: string, time2: string)
-	{
-		let date1 = new Date('2016-01-01 '+ time1);
-		let date2 = new Date('2016-01-01 '+ time2);
-		if (date1 > date2)
-		{
+	private compareTime(time1: string, time2: string) {
+		let date1 = new Date('2016-01-01 ' + time1);
+		let date2 = new Date('2016-01-01 ' + time2);
+		if (date1 > date2) {
 			return 1
 		}
-		if (date1 < date2)
-		{
+		if (date1 < date2) {
 			return -1
 		}
 		return 0
