@@ -14,7 +14,9 @@ It only supports the human readable parts and not [this complete crazy overengin
 * `24/7`
 
 ## Usage
-	var opening = new SimpleOpeningHours('Mo-Sa 06:00-22:00');
-	console.log('Is this open now?', opening.isOpenNow());
-	console.log('Is this open on 2016-10-01 18:00?', opening.isOpenOn(new Date('2016-10-01 18:00')));
-	console.table(opening.getTable());
+```javascript
+var opening = new SimpleOpeningHours('Mo-Sa 06:00-22:00');
+console.log('Is this open now?', opening.isOpenNow());
+console.log('Is this open on 2016-10-01 18:00?', opening.isOpenOn(new Date('2016-10-01 18:00')));
+console.table(opening.getTable());
+```	
