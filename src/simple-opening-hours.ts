@@ -10,19 +10,22 @@ export default class SimpleOpeningHours {
 	 * returns the OpeningHours Object
 	 */
 	public getTable() {
-		return this.openingHours;
+		return typeof this.openingHours === "object" ? this.openingHours : {};
 	}
 
 	/**
 	 * Returns if the OpeningHours match on given Date
 	 */
 	public isOpenOn(date: Date): boolean {
-		let testday = date.getDay();
-		let testtime = date.getHours() + ":" + date.getMinutes()
+		if (typeof this.openingHours !== "object") {
+			return this.openingHours
+		}
+		let testDay = date.getDay();
+		let testTime = date.getHours() + ":" + date.getMinutes()
 		let i = 0;
 		let times: string[];
 		for (let key in this.openingHours) {
-			if (i == testday) {
+			if (i == testDay) {
 				times = this.openingHours[key];
 			}
 			i++;
@@ -31,8 +34,8 @@ export default class SimpleOpeningHours {
 		times.forEach((time) => {
 			//TODO: times like 09:00+ are not supported here
 			let timedata = time.split('-');
-			if ((this.compareTime(testtime, timedata[0]) != -1)
-				&& (this.compareTime(timedata[1], testtime) != -1)) {
+			if ((this.compareTime(testTime, timedata[0]) != -1)
+				&& (this.compareTime(timedata[1], testTime) != -1)) {
 				isOpen = true;
 			}
 		});
@@ -43,41 +46,26 @@ export default class SimpleOpeningHours {
 	 * returns if the OpeningHours match now
 	 */
 	public isOpenNow(): boolean {
-		return this.isOpenOn(new Date());
+		return typeof this.openingHours === "object" ? this.isOpenOn(new Date()) : this.openingHours
 	}
 
 	/**
 	 * Parses the input and creates openingHours Object
 	 */
-	private parse(inp) {
-		this.initOpeningHoursObj();
-		inp = this.simplify(inp);
-		let parts = this.splitHard(inp);
-		parts.forEach((part) => {
+	private parse(input:string) {
+		if (/24\s*?\/\s*?7/.test(input)) {
+			this.openingHours = true;
+			return
+		} else if (/\s*off\s*/.test(input)) {
+			this.openingHours = false
+			return
+		}
+		this.init();
+		input = input.trim().toLowerCase().replace(/\s*([-:,;])\s*/g, '$1')
+		let parts = this.splitHard(input);
+		parts.forEach(part => {
 			this.parseHardPart(part)
 		});
-	}
-
-	private simplify(input: string): string {
-		if (input == "24/7") {
-			input = "mo-su 00:00-24:00; ph 00:00-24:00";
-		}
-		input = input.toLocaleLowerCase();
-		input = input.trim();
-		input = input.replace(/ +(?= )/g, ''); //replace double spaces
-
-		input = input.replace(' -', '-');
-		input = input.replace('- ', '-');
-
-		input = input.replace(' :', ':');
-		input = input.replace(': ', ':');
-
-		input = input.replace(' ,', ',');
-		input = input.replace(', ', ',');
-
-		input = input.replace(' ;', ';');
-		input = input.replace('; ', ';');
-		return input;
 	}
 
 	/**
@@ -142,7 +130,6 @@ export default class SimpleOpeningHours {
 	}
 
 	private parseDays(part: string): string[] {
-		part = part.toLowerCase();
 		let days = []
 		let softparts = part.split(',');
 		softparts.forEach((part) => {
@@ -281,5 +268,5 @@ export default class SimpleOpeningHours {
 		return 0
 	}
 
-	private openingHours: Object;
+	private openingHours: Object | boolean;
 }
