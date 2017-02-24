@@ -1,13 +1,13 @@
 {
-	"compilerOptions": {
-    	"module": "amd",
-		"target": "es3",
+    "compilerOptions": {
+        "module": "umd",
+        "target": "es5",
         "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
-        "outFile": "dist/simple-opening-hours.js",
         "sourceMap": true,
-		"watch": true
-	},
-	"exclude": []
+        "watch": true,
+        "outDir": "./dist"
+    },
+    "exclude": []
 }
