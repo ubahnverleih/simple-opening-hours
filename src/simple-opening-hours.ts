@@ -2,8 +2,8 @@ export default class SimpleOpeningHours {
 	/**
 	 * Creates the OpeningHours Object with OSM opening_hours string
 	 */
-	constructor(inp: string) {
-		this.parse(inp);
+	constructor(input: string) {
+		this.parse(input);
 	}
 
 	/**
@@ -71,8 +71,8 @@ export default class SimpleOpeningHours {
 	/**
 	 * Split on ;
 	 */
-	private splitHard(inp: string): string[] {
-		return inp.split(';');
+	private splitHard(input: string): string[] {
+		return input.split(';');
 	}
 
 	private parseHardPart(part: string) {
@@ -103,7 +103,7 @@ export default class SimpleOpeningHours {
 					times = [];
 				}
 			}
-			if (this.checkTime(segment)) {
+			if (this.isTimeRange(segment)) {
 				if (segment == "off") {
 					times = []
 				}
@@ -145,7 +145,7 @@ export default class SimpleOpeningHours {
 		return days
 	}
 
-	private initOpeningHoursObj() {
+	private init() {
 		this.openingHours = {
 			su: [],
 			mo: [],
@@ -214,17 +214,17 @@ export default class SimpleOpeningHours {
 	/**
 	 * Check if string is time range
 	 */
-	private checkTime(inp: string): boolean {
+	private isTimeRange(input: string): boolean {
 		//e.g. 09:00+
-		if (inp.match(/[0-9]{1,2}:[0-9]{2}\+/)) {
+		if (input.match(/[0-9]{1,2}:[0-9]{2}\+/)) {
 			return true
 		}
 		//e.g. 08:00-12:00
-		if (inp.match(/[0-9]{1,2}:[0-9]{2}\-[0-9]{1,2}:[0-9]{2}/)) {
+		if (input.match(/[0-9]{1,2}:[0-9]{2}\-[0-9]{1,2}:[0-9]{2}/)) {
 			return true
 		}
 		//off
-		if (inp.match(/off/)) {
+		if (input.match(/off/)) {
 			return true
 		}
 		return false
@@ -233,17 +233,17 @@ export default class SimpleOpeningHours {
 	/**
 	 * check if string is day or dayrange
 	 */
-	private checkDay(inp: string): boolean {
+	private checkDay(input: string): boolean {
 		let days = ["mo", "tu", "we", "th", "fr", "sa", "su", "ph"]
-		if (inp.match(/\-/g)) {
-			let rangelements = inp.split('-');
-			if (days.indexOf(rangelements[0]) !== -1
-				&& days.indexOf(rangelements[1]) !== -1) {
+		if (input.match(/\-/g)) {
+			let rangeElements = input.split('-');
+			if (days.indexOf(rangeElements[0]) !== -1
+				&& days.indexOf(rangeElements[1]) !== -1) {
 				return true
 			}
 		}
 		else {
-			if (days.indexOf(inp) !== -1) {
+			if (days.indexOf(input) !== -1) {
 				return true
 			}
 		}
