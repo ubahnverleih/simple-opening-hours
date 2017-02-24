@@ -1,4 +1,4 @@
-class SimpleOpeningHours {
+export default class SimpleOpeningHours {
 	/**
 	 * Creates the OpeningHours Object with OSM opening_hours string
 	 */
