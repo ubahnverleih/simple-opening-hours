@@ -257,15 +257,15 @@ export default class SimpleOpeningHours {
 	 * if time1 == time2 -> 0
 	 */
 	private compareTime(time1: string, time2: string) {
-		let date1 = new Date('2016-01-01 ' + time1);
-		let date2 = new Date('2016-01-01 ' + time2);
+		const date1 = Number(time1.replace(":", ""))
+		const date2 = Number(time2.replace(":", ""))
 		if (date1 > date2) {
 			return 1
-		}
-		if (date1 < date2) {
+		} else if (date1 < date2) {
 			return -1
+		} else {
+			return 0
 		}
-		return 0
 	}
 
 	private openingHours: Object | boolean;
