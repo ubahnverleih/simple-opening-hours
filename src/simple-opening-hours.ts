@@ -21,7 +21,7 @@ export default class SimpleOpeningHours {
 			return this.openingHours
 		}
 		let testDay = date.getDay();
-		let testTime = date.getHours() + ":" + date.getMinutes()
+		let testTime = date.getHours() + ":" + (date.getMinutes() < 10 ? ("0" + date.getMinutes()) : date.getMinutes())
 		let i = 0;
 		let times: string[];
 		for (let key in this.openingHours) {
@@ -31,12 +31,12 @@ export default class SimpleOpeningHours {
 			i++;
 		}
 		let isOpen = false
-		times.forEach((time) => {
-			//TODO: times like 09:00+ are not supported here
-			let timedata = time.split('-');
-			if ((this.compareTime(testTime, timedata[0]) != -1)
-				&& (this.compareTime(timedata[1], testTime) != -1)) {
+		times.some(time => {
+			const timeData = time.replace(/\+$/, "-24:00").split("-")
+			if ((this.compareTime(testTime, timeData[0]) != -1)
+				&& (this.compareTime(timeData[1], testTime) != -1)) {
 				isOpen = true;
+				return true;
 			}
 		});
 		return isOpen;
@@ -242,10 +242,8 @@ export default class SimpleOpeningHours {
 				return true
 			}
 		}
-		else {
-			if (days.indexOf(input) !== -1) {
-				return true
-			}
+		else if (days.indexOf(input) !== -1) {
+			return true
 		}
 		return false
 	}
