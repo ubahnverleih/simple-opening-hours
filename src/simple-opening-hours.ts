@@ -13,15 +13,13 @@ export default class SimpleOpeningHours {
 		return typeof this.openingHours === "object" ? this.openingHours : {};
 	}
 
-	/**
-	 * Returns if the OpeningHours match on given Date
-	 */
-	public isOpenOn(date: Date): boolean {
-		if (typeof this.openingHours !== "object") {
+	public isOpen(date?: Date): boolean {
+		if (typeof this.openingHours === "boolean") {
 			return this.openingHours
 		}
-		let testDay = date.getDay();
-		let testTime = date.getHours() + ":" + (date.getMinutes() < 10 ? ("0" + date.getMinutes()) : date.getMinutes())
+		date = date || new Date()
+		const testDay = date.getDay();
+		const testTime = date.getHours() + ":" + (date.getMinutes() < 10 ? ("0" + date.getMinutes()) : date.getMinutes())
 		let i = 0;
 		let times: string[];
 		for (let key in this.openingHours) {
@@ -43,36 +41,22 @@ export default class SimpleOpeningHours {
 	}
 
 	/**
-	 * returns if the OpeningHours match now
-	 */
-	public isOpenNow(): boolean {
-		return typeof this.openingHours === "object" ? this.isOpenOn(new Date()) : this.openingHours
-	}
-
-	/**
 	 * Parses the input and creates openingHours Object
 	 */
 	private parse(input:string) {
 		if (/24\s*?\/\s*?7/.test(input)) {
-			this.openingHours = true;
+			this.openingHours = this.alwaysOpen = true;
 			return
 		} else if (/\s*off\s*/.test(input)) {
 			this.openingHours = false
+			this.alwaysClosed = true
 			return
 		}
 		this.init();
-		input = input.trim().toLowerCase().replace(/\s*([-:,;])\s*/g, '$1')
-		let parts = this.splitHard(input);
+		const parts = input.toLowerCase().replace(/\s*([-:,;])\s*/g, '$1').split(";")
 		parts.forEach(part => {
 			this.parseHardPart(part)
 		});
-	}
-
-	/**
-	 * Split on ;
-	 */
-	private splitHard(input: string): string[] {
-		return input.split(';');
 	}
 
 	private parseHardPart(part: string) {
@@ -266,5 +250,14 @@ export default class SimpleOpeningHours {
 		}
 	}
 
-	private openingHours: Object | boolean;
+	private openingHours: Object | boolean
+	private alwaysOpen?: boolean
+	private alwaysClosed?: boolean
+}
+
+export function map<T>(oh: SimpleOpeningHours, callback: (index:number, times: Array<string>)=>T): T[] {
+	const table = oh.getTable()
+	return ["mo", "tu", "we", "th", "fr", "sa", "su"].map((weekday, index) => (
+		callback(((index + 1) % 7), table[weekday])
+	))
 }

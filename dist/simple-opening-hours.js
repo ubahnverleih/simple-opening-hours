@@ -22,16 +22,14 @@
         SimpleOpeningHours.prototype.getTable = function () {
             return typeof this.openingHours === "object" ? this.openingHours : {};
         };
-        /**
-         * Returns if the OpeningHours match on given Date
-         */
-        SimpleOpeningHours.prototype.isOpenOn = function (date) {
+        SimpleOpeningHours.prototype.isOpen = function (date) {
             var _this = this;
-            if (typeof this.openingHours !== "object") {
+            if (typeof this.openingHours === "boolean") {
                 return this.openingHours;
             }
+            date = date || new Date();
             var testDay = date.getDay();
-            var testTime = date.getHours() + ":" + date.getMinutes();
+            var testTime = date.getHours() + ":" + (date.getMinutes() < 10 ? ("0" + date.getMinutes()) : date.getMinutes());
             var i = 0;
             var times;
             for (var key in this.openingHours) {
@@ -41,21 +39,15 @@
                 i++;
             }
             var isOpen = false;
-            times.forEach(function (time) {
-                //TODO: times like 09:00+ are not supported here
-                var timedata = time.split('-');
-                if ((_this.compareTime(testTime, timedata[0]) != -1)
-                    && (_this.compareTime(timedata[1], testTime) != -1)) {
+            times.some(function (time) {
+                var timeData = time.replace(/\+$/, "-24:00").split("-");
+                if ((_this.compareTime(testTime, timeData[0]) != -1)
+                    && (_this.compareTime(timeData[1], testTime) != -1)) {
                     isOpen = true;
+                    return true;
                 }
             });
             return isOpen;
-        };
-        /**
-         * returns if the OpeningHours match now
-         */
-        SimpleOpeningHours.prototype.isOpenNow = function () {
-            return typeof this.openingHours === "object" ? this.isOpenOn(new Date()) : this.openingHours;
         };
         /**
          * Parses the input and creates openingHours Object
@@ -63,25 +55,19 @@
         SimpleOpeningHours.prototype.parse = function (input) {
             var _this = this;
             if (/24\s*?\/\s*?7/.test(input)) {
-                this.openingHours = true;
+                this.openingHours = this.alwaysOpen = true;
                 return;
             }
             else if (/\s*off\s*/.test(input)) {
                 this.openingHours = false;
+                this.alwaysClosed = true;
                 return;
             }
             this.init();
-            input = input.trim().toLowerCase().replace(/\s*([-:,;])\s*/g, '$1');
-            var parts = this.splitHard(input);
+            var parts = input.toLowerCase().replace(/\s*([-:,;])\s*/g, '$1').split(";");
             parts.forEach(function (part) {
                 _this.parseHardPart(part);
             });
-        };
-        /**
-         * Split on ;
-         */
-        SimpleOpeningHours.prototype.splitHard = function (input) {
-            return input.split(';');
         };
         SimpleOpeningHours.prototype.parseHardPart = function (part) {
             var _this = this;
@@ -238,10 +224,8 @@
                     return true;
                 }
             }
-            else {
-                if (days.indexOf(input) !== -1) {
-                    return true;
-                }
+            else if (days.indexOf(input) !== -1) {
+                return true;
             }
             return false;
         };
@@ -252,18 +236,25 @@
          * if time1 == time2 -> 0
          */
         SimpleOpeningHours.prototype.compareTime = function (time1, time2) {
-            var date1 = new Date('2016-01-01 ' + time1);
-            var date2 = new Date('2016-01-01 ' + time2);
+            var date1 = Number(time1.replace(":", ""));
+            var date2 = Number(time2.replace(":", ""));
             if (date1 > date2) {
                 return 1;
             }
-            if (date1 < date2) {
+            else if (date1 < date2) {
                 return -1;
             }
-            return 0;
+            else {
+                return 0;
+            }
         };
         return SimpleOpeningHours;
     }());
     exports.default = SimpleOpeningHours;
+    function map(oh, callback) {
+        var table = oh.getTable();
+        return ["mo", "tu", "we", "th", "fr", "sa", "su"].map(function (weekday, index) { return (callback(((index + 1) % 7), table[weekday])); });
+    }
+    exports.map = map;
 });
 //# sourceMappingURL=simple-opening-hours.js.map
