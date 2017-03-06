@@ -16,8 +16,8 @@
   "scripts": {
     "test": "tap test/*.js --cov",
     "compile": "tsc",
-    "watch": "nodemon -q -x 'npm test'",
-    "develop": "develp & watch"
+    "watch": "nodemon -x \"npm test\"",
+    "develop": "compile & watch"
   },
   "repository": {
     "type": "git",
