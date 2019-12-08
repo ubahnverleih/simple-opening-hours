@@ -1,0 +1,35 @@
+{
+  "name": "simple-opening-hours",
+  "version": "1.0.0",
+  "description": "Less crazy opening hours parser",
+  "main": "dist/simple-opening-hours.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^3.16.1",
+    "tap": "^10.2.1",
+    "nodemon": "1.11.0"
+  },
+  "scripts": {
+    "test": "tap test/*.js --cov",
+    "compile": "tsc",
+    "watch": "nodemon -x \"npm test\"",
+    "develop": "compile & watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pke/simple-opening-hours.git"
+  },
+  "keywords": [
+    "opening hours"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pke/simple-opening-hours/issues"
+  },
+  "homepage": "https://github.com/pke/simple-opening-hours#readme"
+}
