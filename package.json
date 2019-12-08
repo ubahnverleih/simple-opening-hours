@@ -9,7 +9,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^3.16.1",
+    "eslint": "^6.7.2",
     "tap": "^10.2.1",
     "nodemon": "1.11.0"
   },
